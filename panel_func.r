@@ -130,6 +130,91 @@ btwn.reg <- function(x,y){
 }
 
 
+################################################################
+
+########## Random Effects Model
+
+random.reg <- function(x,y){
   
+# estimate sigma^2 u from within group residuals
+ 
+inxx.w <- solve(t(x) %*% qmatall %*% x)
+b.w <- inxx.w %*% t(x) %*% qmatall %*% y
+y.tilde <- as.matrix(qmatall %*% y)
+x.tilde <- as.matrix(qmatall %*% x)
+e.tilde <- as.matrix(y.tilde - (x.tilde %*% b.w))
+
+var.u <- as.numeric((t(e.tilde) %*% e.tilde)/(n*(t-1)-k))     
+
+varcov.u <- (var.u)*as.matrix(inxx.w)  ### for use in Hausman test
+
+# estimate sigma^2 alpha from between group residuals
+
+e.big <- (1/t)*(I.n %x% e)
+meany <- t(e.big)%*%y
+meanx <- t(e.big)%*%xc
+b.btwn <- solve(t(meanx)%*%meanx)%*%(t(meanx)%*%meany)
+e.btwn <- meany - meanx %*% b.btwn
+
+var.a <- as.numeric((t(e.btwn) %*% e.btwn)/(n-(k+1))) - (1/t)*var.u  
+
+# calculate psi, V^-1, and omega^-1
+
+psi <- as.numeric(var.u/(var.u + t*var.a))
+
+Vinv <- (1/var.u)*(I.t - (1/t)*J.t + psi*((1/t)*J.t))
+
+omegainv <- I.n %x% Vinv
+
+# calculate RE estimates and se's
+
+delta.re <- solve(t(xc)%*%omegainv%*%xc)%*%(t(xc)%*%omegainv%*%y) 
+T.xx <- t(xc)%*%xc
+B.xx <- (1/t)*(t(xc)%*%(I.n%x%J.t)%*%xc)
+varcov.re <- var.u*solve((T.xx-B.xx)+psi*B.xx)
+se.re <- as.numeric(sqrt(diag(varcov.re)))
+t.re <- delta.re/se.re
+
+reresults <- round(cbind(delta.re,se.re,t.re),3)
+rownames(reresults) <- c("constant",varnames)
+colnames(reresults) <- c("b.re","se.re","t.re")
+reresults
+}
+
+
+############
+######   Hausman Test - optional / rough code 
+# Hausman test
+
+b.re <- delta.re[-(1:1)]
+m <- t(b.w-b.re)%*%solve(varcov.u-varcov.re[2:10,2:10])%*%(b.w-b.re)
+m
+
+########################################
+
+######### Panel Corrected Standard Errors.
+
+### PCSEs are used with OLS betas so i included b.ols again
+
+ols.pcse <- function(x,y){
+
+  b.ols <- solve(t(x)%*%x)%*%(t(x)%*%y)
+  e.ols <- y -  %*% b.ols
+
+  E <- matrix(e.ols,t,n)
+  sigma <- (t(E)%*%E)/t
+  omega <- sigma %x% I.t
+
+  varcov.pcse <- solve(t()%*%x)%*%t(x)%*%omega%*% x %*% solve(t(x)%*%x)
+  se.pcse <- as.numeric(sqrt(diag(varcov.pcse)))
+  t.pcse <- b.ols/se.pcse
+
+  pcseresults <- round(cbind(b.ols,se.pcse,t.pcse),3)
+  rownames(pcseresults) <- c("constant",varnames)
+  colnames(pcseresults) <- c("b.ols","se.pcse","t.pcse")
+  pcseresults
+}
+
+
 
 
