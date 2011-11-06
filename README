@@ -1,1 +1,23 @@
-Panel_func is a script containing several functions for analysis of panel data with R. More functions will be added over time. 
+
+Analysis of Panel Data 
+
+Panel_func is a script containing several functions for analysis of panel data with R. It is primarily intended as a practice in statistics and computing and not as a replacement for R's built in functions or packages. The PLM library is an optimized source for Panel analysis. 
+
+See: Hsiao 2008
+        Greene 2008
+        Baltagi 2005 
+        Beck & Katz 1995 APSR 	
+
+------------------------------
+Included as of 11/5/11
+
+* OLS regression. - note that this and the rest of the file relies heavily on solve() to invert matrices and will struggle with large matrices. 
+
+*LSDV - least squares dummy variable regression with 0,1 indicators for time and unit effects. 
+
+* Fixed Effects with within and between group estimators. Fixed effects has been broken into two functions for fixed and within group estimation separately. 
+
+* Random Effects with Feasible Least Generalized Least Squares FGLS
+
+* Panel Corrected Standard Errors (PCSE)
+
