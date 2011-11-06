@@ -33,6 +33,7 @@ x <- cbind(e,x)
 # for global intercept for functions below. hence cbind(e,x) now have a matrix
 #of explamataory variables and global intercept.
 
+###################### OLS ##################
 
 
 ols.reg <- function(x,y){
@@ -50,6 +51,10 @@ ols.reg <- function(x,y){
   print("OLS Estimates")
   print(round(table,4))  
 }
+
+###########################################################
+
+#######      Within Group Estimator  
 
 within.fix <- function(x,y){
   #within group estimator for fixed effects
@@ -70,7 +75,9 @@ within.fix <- function(x,y){
   print(round(fetable, 4))
 }
 
-########### LSDV Least Squares dunny variable for fixed effects
+#########################################################
+
+######### LSDV Least Squares dummy variable for fixed effects
 
 
 lsdv.reg <- function(x,y){
@@ -94,5 +101,35 @@ lsdv.reg <- function(x,y){
   #note this will print out a dummy variable estimate for each effect, use [ ] to
   #cut down on large tables
 }
+
+
+############################################################
+################## Between group estimator
+
+btwn.reg <- function(x,y){
+  e.big <- (1/t) * (I.n %x% e)
+
+  mean.x <- t(e.big) %*% y
+  mean.y <- t(e.big) %*% x
+
+  b.btwn <- solve(t(meanx) %*% meanx) %*% (t(meanx) %*% meany)
+  #coef estimates for between groups
+
+  e.btwn <- meany - meanx %*% b.btwn
+  ssq.btwn <- as.numeric(t(e.btwn) %*% e.btwn) / (nrow(meanx) -ncol(meanx))
+  varcov.btwn <- ssq.btwn * (solve(t(meanx) %*% meanx))
+  se.btwn <- sqrt(diag(varcov.btwn))
+  #Standard Error estimates
+
+  t.btwn <- b.btwn / se.btwn
+
+  btwn.table <- cbind(b.btwn, se.btwn, t.btwn)
+
+  print("Between Estimates")
+  print(round(btwn.table, 4))
+}
+
+
+  
 
 
