@@ -70,5 +70,29 @@ within.fix <- function(x,y){
   print(round(fetable, 4))
 }
 
+########### LSDV Least Squares dunny variable for fixed effects
+
+
+lsdv.reg <- function(x,y){
+
+  x.lsdv <- as.matrix(cbind(I.n, %x% e, x))
+
+  b.lsdv <- solve(t(x.lsdv) %x% x.lasdv)%*% (t(x.lasdv) %*% y)
+
+  e.lsdv <- y - x.lsdv %*% b.lsdv
+  #rediduals
+  ssq.lsdv <- as.numeric((t(e.lsdv) %*% e.lsdv) / (nrow(x.lsdv) - ncol(x.lasdv)))
+  varcov.lsdv <- ssq.lsdv* (solve(t(x.lsdv) %*% x.lsdv) %*% x.lsdv)
+  se.lsdv <- sqrt(diag(varcov.lsdv))
+  #Stand error
+
+  t.lsdv <- b.lsdv / se.lsdv
+
+  table.lsdv <- cbind(b.lsdv, se.lsdv, t.lsdv)
+  print("LSDV Estimates")
+  print(round(table.lsdv, 4))
+  #note this will print out a dummy variable estimate for each effect, use [ ] to
+  #cut down on large tables
+}
 
 
