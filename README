@@ -11,13 +11,13 @@ See: Hsiao 2008
 ------------------------------
 Included as of 11/5/11
 
-* OLS regression. - note that this and the rest of the file relies heavily on solve() to invert matrices and will struggle with large matrices. 
+* OLS regression. - note that this and the rest of the file relies heavily on solve() to invert matrices and will struggle with large matrices. A significantly more efficient approach would take advantage of QR decomposition of the explanatory matrix with R's qr() function. 
 
 *LSDV - least squares dummy variable regression with 0,1 indicators for time and unit effects. 
 
-* Fixed Effects with within and between group estimators. Fixed effects has been broken into two functions for fixed and within group estimation separately. 
+* Fixed Effects with within and between group estimators. Fixed effects has been broken into two functions for between and within group estimation separately. 
 
-* Random Effects with Feasible Least Generalized Least Squares FGLS
+* Random Effects with Feasible Generalized Least Square (FGLS)
 
 * Panel Corrected Standard Errors (PCSE)
 
